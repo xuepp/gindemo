@@ -1,20 +1,20 @@
 package router
 
 import (
-	"fmt"
-	"gindemo/common"
-	v1 "gindemo/controller/v1"
-	v2 "gindemo/controller/v2"
-	"net/url"
-	"strconv"
+	logger "gindemo/middleware/logger"
+	sign "gindemo/middleware/sigin"
+	v1 "gindemo/router/v1"
+	v2 "gindemo/router/v2"
+	"gindemo/validator/member"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 )
 
 func InitRouter(r *gin.Engine) {
-	r.GET("/test", Test)
 
-	r.GET("/sn", SignDemo)
+	r.Use(logger.LoggerToFile())
 
 	// v1 版本
 	GroupV1 := r.Group("/v1")
@@ -24,27 +24,14 @@ func InitRouter(r *gin.Engine) {
 	}
 
 	// v2 版本
-	GroupV2 := r.Group("/v2", common.VerifySign)
+	GroupV2 := r.Group("/v2").Use(sign.Sign())
 	{
 		GroupV2.Any("/product/add", v2.AddProduct)
 		GroupV2.Any("/member/add", v2.AddMember)
 	}
-}
 
-func SignDemo(c *gin.Context) {
-	fmt.Println("SignDemo")
-	ts := strconv.FormatInt(common.GetTimeUnix(), 10)
-	res := map[string]interface{}{}
-	params := url.Values{
-		"name":  []string{"a"},
-		"price": []string{"10"},
-		"ts":    []string{ts},
+	// 绑定验证器
+	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
+		v.RegisterValidation("NameValid", member.NameValid)
 	}
-	res["sn"] = common.CreateSign(params)
-	res["ts"] = ts
-	common.RetJson("200", "", res, c)
-}
-
-func Test(c *gin.Context) {
-	fmt.Println("Test66666")
 }
