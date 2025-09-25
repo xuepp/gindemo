@@ -4,6 +4,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
+	// swagger 相关
+	_ "github.com/xuepp/gindemo/demo-2/docs" // 这一行要导入你生成的 docs 包
 )
 
 type UserHandler struct {
@@ -16,6 +21,7 @@ func NewUserHandler(s *UserService) *UserHandler {
 
 // RegisterRoutes 注册路由
 func (h *UserHandler) RegisterRoutes(r *gin.Engine) {
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.POST("/users", h.CreateUser)
 	r.GET("/users", h.ListUsers)
 }
