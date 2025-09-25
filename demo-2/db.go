@@ -6,9 +6,5 @@ import (
 )
 
 func NewDB(cfg *Config) (*gorm.DB, error) {
-	db, err := gorm.Open(mysql.Open(cfg.DBConn), &gorm.Config{})
-	if err != nil {
-		return nil, err
-	}
-	return db, nil
+	return gorm.Open(mysql.Open(cfg.DSN), &gorm.Config{})
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/google/wire"
 )
 
-func InitApp() (*gin.Engine, *Config, error) {
+func InitApp() (*gin.Engine, error) {
 	wire.Build(
 		NewConfig,
 		NewDB,
@@ -17,12 +17,11 @@ func InitApp() (*gin.Engine, *Config, error) {
 		NewUserHandler,
 		NewGinEngine,
 	)
-	return nil, nil, nil
+	return nil, nil
 }
 
-// NewGinEngine 用于组装 Gin
 func NewGinEngine(handler *UserHandler, cfg *Config) *gin.Engine {
-	e := gin.Default()
-	handler.RegisterRoutes(e)
-	return e
+	r := gin.Default()
+	handler.RegisterRoutes(r)
+	return r
 }

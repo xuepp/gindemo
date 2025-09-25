@@ -1,15 +1,13 @@
 package main
 
-import "log"
+import (
+	"log"
+)
 
 func main() {
-	engine, cfg, err := InitApp()
+	engine, err := InitApp() // 只接收 2 个返回值
 	if err != nil {
-		log.Fatalf("failed to init app: %v", err)
+		log.Fatal(err)
 	}
-
-	log.Printf("server running at %s", cfg.Addr)
-	if err := engine.Run(cfg.Addr); err != nil {
-		log.Fatalf("server error: %v", err)
-	}
+	engine.Run(":8080")
 }

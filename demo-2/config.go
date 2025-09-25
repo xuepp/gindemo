@@ -1,13 +1,16 @@
 package main
 
+import "os"
+
 type Config struct {
-	DBConn string
-	Addr   string
+	DSN string
 }
 
 func NewConfig() *Config {
-	return &Config{
-		DBConn: "gin:@tcp(1qaz@WSX:3306)/gin",
-		Addr:   ":8080",
+	// 从环境变量读取，默认 root:123456
+	dsn := os.Getenv("MYSQL_DSN")
+	if dsn == "" {
+		dsn = "gin:1qaz@WSX@tcp(oneformadevops.mysql.database.azure.com:3306)/gin?charset=utf8mb4&parseTime=True&loc=Local"
 	}
+	return &Config{DSN: dsn}
 }
