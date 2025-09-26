@@ -1,0 +1,32 @@
+definitions:
+  main.User:
+    properties:
+      email:
+        example: tom@example.com
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: Tom
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /users:
+    get:
+      description: 返回所有用户
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/main.User'
+            type: array
+      summary: 获取用户列表
+      tags:
+      - user
+swagger: "2.0"

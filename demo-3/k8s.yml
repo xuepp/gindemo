@@ -1,0 +1,56 @@
+# ========================
+# Namespace 可选
+# ========================
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gindemo
+---
+# ========================
+# Gin Deployment
+# ========================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gin-demo
+  namespace: demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gin-demo
+  template:
+    metadata:
+      labels:
+        app: gin-demo
+    spec:
+      containers:
+        - name: gin-demo
+          image: oneformanew.azurecr.io/gindemo:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8081
+          # 如果需要环境变量可以在这里加
+          # env:
+          #   - name: ENV_VAR_NAME
+          #     value: "value"
+---
+# ========================
+# Gin Service
+# ========================
+apiVersion: v1
+kind: Service
+metadata:
+  name: gin-demo
+  namespace: demo
+spec:
+  type: LoadBalancer # 可改为 ClusterIP / LoadBalancer
+  loadBalancerIP: 4.211.186.15
+  selector:
+    app: gin-demo
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80 # 服务暴露端口
+      targetPort: 8081 # 容器端口
+
