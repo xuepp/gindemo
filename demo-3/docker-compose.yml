@@ -4,5 +4,5 @@ services:
     image: gin-demo:latest
     container_name: gin-demo
     ports:
-      - "8081:8081"
+      - "8081:6081"
     restart: unless-stopped

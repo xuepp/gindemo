@@ -1,12 +1,4 @@
 # ========================
-# Namespace 可选
-# ========================
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: gindemo
----
-# ========================
 # Gin Deployment
 # ========================
 apiVersion: apps/v1
@@ -15,7 +7,7 @@ metadata:
   name: gin-demo
   namespace: demo
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: gin-demo
@@ -28,12 +20,52 @@ spec:
         - name: gin-demo
           image: oneformanew.azurecr.io/gindemo:latest
           imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
           ports:
-            - containerPort: 8081
-          # 如果需要环境变量可以在这里加
-          # env:
-          #   - name: ENV_VAR_NAME
-          #     value: "value"
+            - containerPort: 6081
+      nodeSelector:
+        kubernetes.io/hostname: aks-dev-21200703-vmss000000
+        # agentpool:
+        #   uat
+        # 如果需要环境变量可以在这里加
+        # env:
+        #   - name: ENV_VAR_NAME
+        #     value: "value"
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: gin-demo-hpa
+  namespace: demo
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: gin-demo
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+    # 1) CPU 按平均利用率（占 request 的百分比）伸缩
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50 # 当平均 CPU 利用率超过 50% 时可能触发扩容
+    # 2) Memory 按平均值（绝对量）伸缩
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: AverageValue
+          averageValue: "512Mi" # 当每个 pod 平均内存使用接近/超过 512Mi 时可能触发扩容
+
 ---
 # ========================
 # Gin Service
@@ -45,12 +77,12 @@ metadata:
   namespace: demo
 spec:
   type: LoadBalancer # 可改为 ClusterIP / LoadBalancer
-  loadBalancerIP: 4.211.186.15
+  loadBalancerIP: 51.138.202.122
   selector:
     app: gin-demo
   ports:
     - name: http
       protocol: TCP
       port: 80 # 服务暴露端口
-      targetPort: 8081 # 容器端口
+      targetPort: 6081 # 容器端口
 
