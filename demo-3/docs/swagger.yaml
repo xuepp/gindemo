@@ -1,18 +1,5 @@
 basePath: /
-definitions:
-  main.User:
-    properties:
-      email:
-        example: tom@example.com
-        type: string
-      id:
-        example: 1
-        type: integer
-      name:
-        example: Tom
-        type: string
-    type: object
-host: localhost:8080
+host: localhost:6081
 info:
   contact: {}
   description: API to simulate CPU and memory load
@@ -75,19 +62,21 @@ paths:
       summary: Memory Stress Test
       tags:
       - stress
-  /users:
+  /ping:
     get:
-      description: 返回所有用户
+      consumes:
+      - application/json
+      description: 用于测试服务是否可用
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/main.User'
-            type: array
-      summary: 获取用户列表
+            additionalProperties:
+              type: string
+            type: object
+      summary: Ping 接口
       tags:
-      - user
+      - Health
 swagger: "2.0"

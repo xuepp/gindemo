@@ -15,6 +15,7 @@ spec:
     metadata:
       labels:
         app: gin-demo
+        logging: "true"
     spec:
       containers:
         - name: gin-demo

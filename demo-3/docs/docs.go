@@ -99,45 +99,29 @@ const docTemplate = `{
                 }
             }
         },
-        "/users": {
+        "/ping": {
             "get": {
-                "description": "返回所有用户",
+                "description": "用于测试服务是否可用",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "Health"
                 ],
-                "summary": "获取用户列表",
+                "summary": "Ping 接口",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/main.User"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
                             }
                         }
                     }
-                }
-            }
-        }
-    },
-    "definitions": {
-        "main.User": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string",
-                    "example": "tom@example.com"
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "name": {
-                    "type": "string",
-                    "example": "Tom"
                 }
             }
         }
@@ -147,7 +131,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
+	Host:             "localhost:6081",
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "GoPeck Stress Test API",

@@ -6,7 +6,7 @@
         "contact": {},
         "version": "1.0"
     },
-    "host": "localhost:8080",
+    "host": "localhost:6081",
     "basePath": "/",
     "paths": {
         "/cpu": {
@@ -93,45 +93,29 @@
                 }
             }
         },
-        "/users": {
+        "/ping": {
             "get": {
-                "description": "返回所有用户",
+                "description": "用于测试服务是否可用",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "Health"
                 ],
-                "summary": "获取用户列表",
+                "summary": "Ping 接口",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/main.User"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
                             }
                         }
                     }
-                }
-            }
-        }
-    },
-    "definitions": {
-        "main.User": {
-            "type": "object",
-            "properties": {
-                "email": {
-                    "type": "string",
-                    "example": "tom@example.com"
-                },
-                "id": {
-                    "type": "integer",
-                    "example": 1
-                },
-                "name": {
-                    "type": "string",
-                    "example": "Tom"
                 }
             }
         }

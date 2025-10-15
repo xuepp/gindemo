@@ -8,10 +8,15 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 
+# 安装 swag
+RUN go install github.com/swaggo/swag/cmd/swag@latest
+
 COPY . .
 
+RUN swag init
+
 # 静态编译 Go 程序
-RUN CGO_ENABLED=0 GOOS=linux go build -o app main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o app .
 
 # ========================
 # 运行阶段
@@ -22,6 +27,6 @@ WORKDIR /app
 
 COPY --from=builder /app/app .
 
-EXPOSE 8081
+EXPOSE 6081
 
 CMD ["./app"]
